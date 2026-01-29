@@ -1,0 +1,64 @@
+ПОРЯДОК ЗАПУСКА (СТРОГО)
+Шаг 1 — синхронизация CME
+python cme/sync.py
+
+
+Результат:
+data/cme.sqlite заполнена реальными данными CME
+
+Шаг 2 — полная диагностика
+python diag/diag_static_integrity.py
+python diag/diag_runtime_invariants.py
+python diag/diag_architecture_graph.py
+python diag/diag_hard_invariants.py
+python diag/diag_scoring_weights.py
+python diag/diag_acdf_cme_isolation.py
+python diag/diag_backtest_fairness.py
+python diag/diag_hard_stop_expiration.py
+
+
+❗ Если хотя бы один FAIL — дальше идти нельзя.
+
+Шаг 3 — проверка контракта
+python contracts/SYSTEM_CONTRACT.py
+
+
+Вывод:
+
+SYSTEM CONTRACT VALID
+
+Шаг 4 — backtest
+from backtest.runner import run_backtest
+
+
+Сравниваются:
+
+техника без CME
+
+техника + CME + scoring
+
+Шаг 5 — анализ результатов
+Equity
+from backtest.visualize import plot_equity
+
+Walk-forward
+from backtest.walkforward import run_walk_forward
+
+Фазы рынка
+from backtest.phase_runner import run_phase_backtests
+
+5. ЧТО В ИТОГЕ ТЫ ИМЕЕШЬ
+
+не «идею»
+
+не «сигналку»
+
+не «индикатор»
+
+А институциональный контекстный движок, который:
+
+✔ можно доказать статистически
+✔ можно сломать — и увидеть это
+✔ можно масштабировать
+✔ можно встроить в реальный бот
+✔ невозможно «случайно превратить в грааль»
