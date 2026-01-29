@@ -1,0 +1,65 @@
+project/
+│
+├── config/
+│   └── settings.py
+│
+├── cme/
+│   ├── models/
+│   │   ├── settlement.py
+│   │   └── expiration.py
+│   │
+│   ├── sources/
+│   │   ├── settlements.py
+│   │   └── expirations.py
+│   │
+│   ├── storage/
+│   │   ├── schema.py
+│   │   ├── sqlite.py
+│   │   └── cache.py
+│   │
+│   ├── loader.py
+│   └── sync.py
+│
+├── context/
+│   ├── range_model.py
+│   ├── bias.py
+│   └── scoring/
+│       ├── model.py
+│       ├── components.py
+│       └── scorer.py
+│
+├── technical/
+│   └── acdf/
+│       ├── model.py
+│       ├── calculator.py
+│       └── adapter.py
+│
+├── engine/
+│   ├── context_builder.py
+│   └── decision.py
+│
+├── backtest/
+│   ├── guard.py
+│   ├── engine.py
+│   ├── metrics.py
+│   ├── runner.py
+│   ├── visualize.py
+│   ├── walkforward.py
+│   ├── market_phase.py
+│   └── phase_runner.py
+│
+├── contracts/
+│   └── SYSTEM_CONTRACT.py
+│
+├── diag/
+│   ├── diag_static_integrity.py
+│   ├── diag_runtime_invariants.py
+│   ├── diag_architecture_graph.py
+│   ├── diag_hard_invariants.py
+│   ├── diag_scoring_weights.py
+│   ├── diag_acdf_cme_isolation.py
+│   ├── diag_backtest_fairness.py
+│   └── diag_hard_stop_expiration.py
+│
+└── data/
+    └── cme.sqlite
