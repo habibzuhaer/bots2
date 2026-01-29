@@ -1,0 +1,44 @@
+КАК ПОДКЛЮЧАЮТСЯ ТВОИ МОДУЛИ (ПРИНЦИП)
+Decision без CME
+def decision_no_cme(bar):
+    market_state = extract_market_state(bar)
+    return build_acdf_levels(market_state)
+
+Decision с CME
+def decision_with_cme(bar):
+    context = build_context_from_db(bar.time)
+    if not can_trade(bar.price, context):
+        return None
+
+    score = compute_cme_score(...)
+    if score.score < MIN_CONTEXT_SCORE:
+        return None
+
+    market_state = extract_market_state(bar)
+    return build_acdf_levels(market_state)
+
+
+❗ Исполнитель (executor) один и тот же
+Именно так достигается честность сравнения.
+
+6️⃣ ЧТО МЫ ПОЛУЧАЕМ В РЕЗУЛЬТАТЕ
+
+📊 реальное сравнение, а не «ощущения»
+
+📉 видно, где CME:
+
+снижает количество сделок
+
+улучшает winrate
+
+уменьшает drawdown
+
+❌ если CME не даёт преимущества — это видно сразу
+
+ФИНАЛЬНОЕ СОСТОЯНИЕ СИСТЕМЫ
+
+✔ CME — контекст намерений
+✔ scoring — качество
+✔ A–C–D–F — геометрия
+✔ backtest — проверка гипотез
+✔ ни одного «магического» места
