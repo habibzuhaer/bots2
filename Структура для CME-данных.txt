@@ -1,0 +1,11 @@
+cme/
+├── sources/
+│   ├── settlements.py      # загрузка settlements
+│   ├── expirations.py     # календарь экспираций
+│   └── contracts.py       # спецификация контрактов
+│
+├── models/
+│   ├── settlement.py
+│   └── expiration.py
+│
+└── loader.py               # единая точка входа
