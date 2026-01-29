@@ -1,0 +1,14 @@
+КАК ВСЁ СОБИРАЕТСЯ ВМЕСТЕ
+results = run_backtest(...)
+plot_equity(trades_plain, trades_cme)
+
+wf = run_walk_forward(...)
+phase_results = run_phase_backtests(...)
+
+ЧТО ТЫ В ИТОГЕ ПОЛУЧАЕШЬ
+
+✔ equity-кривые — визуально
+✔ walk-forward — устойчивость
+✔ фазы рынка — где CME реально даёт edge
+✔ одна техника, один executor, один контракт
+✔ честное сравнение без подмены логики
