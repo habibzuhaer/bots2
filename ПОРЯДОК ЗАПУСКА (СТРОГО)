@@ -62,3 +62,10 @@ from backtest.phase_runner import run_phase_backtests
 ✔ можно масштабировать
 ✔ можно встроить в реальный бот
 ✔ невозможно «случайно превратить в грааль»
+
+ФИНАЛЬНАЯ ФОРМУЛА СИСТЕМЫ
+CME → Gate
+Gate → Scoring
+Scoring → Разрешение на технику
+Техника → Геометрия
+Backtest → Истина
