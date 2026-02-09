@@ -1,0 +1,37 @@
+crypto_lite/
+│
+├── engine/
+│   ├── levels/
+│   │   ├── stf.py        # уровни STF (твоя логика)
+│   │   ├── mtf.py        # уровни MTF (твоя логика)
+│   │   └── contracts.py  # формат уровней
+│   │
+│   ├── margin/
+│   │   ├── zones.py      # маржинальные зоны 1h / 4h
+│   │   └── contracts.py
+│   │
+│   ├── cme/
+│   │   ├── impulse.py    # импульсная свеча
+│   │   ├── interest.py   # зоны интереса
+│   │   └── filters.py
+│   │
+│   ├── confluence/
+│   │   └── detector.py   # ⚠️ уровень ∈ маржинальная зона
+│   │
+│   └── state/
+│       ├── machine.py    # состояние по символу/ТФ
+│       └── antispam.py
+│
+├── data/
+│   ├── candles.py        # источник свечей (Bybit/REST)
+│   └── adapters.py
+│
+├── storage/
+│   ├── history.py        # сигналы / зоны / совпадения
+│   └── schema.sql
+│
+├── backtest/
+│   └── runner.py
+│
+└── contracts/
+    └── signal.py         # единый контракт наружу
