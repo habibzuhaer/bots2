@@ -1,0 +1,21 @@
+# Основные зависимости
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+ccxt==4.1.0
+pandas==2.1.3
+numpy==1.24.3
+python-telegram-bot==20.3
+sqlalchemy==2.0.23
+aiohttp==3.9.1
+asyncio==3.4.3
+python-multipart==0.0.6
+jinja2==3.1.2
+
+# Для бэктеста
+backtesting==0.3.3
+ta==0.10.2
+plotly==5.18.0
+
+# Для разработки
+pytest==7.4.3
+black==23.11.0
