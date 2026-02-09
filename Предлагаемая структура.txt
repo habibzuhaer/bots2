@@ -1,37 +1,51 @@
-crypto_lite/
-│
+bots2/
+├── main.py                    # Обновленная точка входа
+├── requirements.txt           # Обновленные зависимости
+├── config/
+│   ├── __init__.py
+│   ├── settings.py           # Общие настройки (бывшие trading_settings.py + assets.py)
+│   └── exchange_config.py    # Конфигурация бирж
+├── core/
+│   ├── __init__.py
+│   ├── engine_runner.py      # Оркестратор расчетов
+│   ├── data_handler.py       # Улучшенный обработчик данных
+│   ├── exchange_client.py    # Клиент для работы с биржами
+│   └── state_manager.py      # Управление состоянием
 ├── engine/
-│   ├── levels/
-│   │   ├── stf.py        # уровни STF (твоя логика)
-│   │   ├── mtf.py        # уровни MTF (твоя логика)
-│   │   └── contracts.py  # формат уровней
-│   │
-│   ├── margin/
-│   │   ├── zones.py      # маржинальные зоны 1h / 4h
-│   │   └── contracts.py
-│   │
-│   ├── cme/
-│   │   ├── impulse.py    # импульсная свеча
-│   │   ├── interest.py   # зоны интереса
-│   │   └── filters.py
-│   │
-│   ├── confluence/
-│   │   └── detector.py   # ⚠️ уровень ∈ маржинальная зона
-│   │
-│   └── state/
-│       ├── machine.py    # состояние по символу/ТФ
-│       └── antispam.py
-│
-├── data/
-│   ├── candles.py        # источник свечей (Bybit/REST)
-│   └── adapters.py
-│
+│   ├── __init__.py
+│   ├── levels.py
+│   ├── margin.py
+│   ├── confluence.py
+│   ├── cme.py
+│   └── signals.py           # Новая логика сигналов из trading_tab.py
 ├── storage/
-│   ├── history.py        # сигналы / зоны / совпадения
-│   └── schema.sql
-│
+│   ├── __init__.py
+│   ├── database.py          # SQLite операции
+│   ├── models.py            # Модели данных
+│   └── history_manager.py   # Управление историей тестов
 ├── backtest/
-│   └── runner.py
-│
-└── contracts/
-    └── signal.py         # единый контракт наружу
+│   ├── __init__.py
+│   ├── runner.py            # Запуск тестов
+│   ├── strategy_tester.py   # Логика тестирования
+│   └── results_analyzer.py  # Анализ результатов
+├── web/
+│   ├── __init__.py
+│   ├── app.py               # FastAPI приложение
+│   ├── routes/
+│   │   ├── api.py
+│   │   ├── trading.py
+│   │   └── backtest.py
+│   └── static/
+│       └── index.html       # Веб-интерфейс
+├── utils/
+│   ├── __init__.py
+│   ├── helpers.py           # Вспомогательные функции
+│   ├── validators.py        # Валидация данных
+│   └── logger.py            # Логирование
+├── notify/
+│   ├── __init__.py
+│   ├── telegram.py
+│   └── webhook.py
+└── tests/
+    ├── __init__.py
+    └── test_engine.py
