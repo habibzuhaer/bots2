@@ -1,0 +1,29 @@
+Level = {
+    "symbol": "BTCUSDT",
+    "timeframe": "15m",
+    "type": "STF" | "MTF",
+
+    "base_candle": {
+        "ts": 1700000000,
+        "open": float,
+        "high": float,
+        "low": float,
+        "close": float,
+        "color": "green" | "red"
+    },
+
+    "levels": {
+        "A": float,
+        "C": float,
+        "D": float,
+        "F": float,
+        "X": float,
+        "Y": float
+    },
+
+    "meta": {
+        "body_pct": float,
+        "range_pct": float,
+        "direction": "long" | "short"
+    }
+}
