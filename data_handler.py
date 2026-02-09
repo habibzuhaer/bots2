@@ -1,34 +1,40 @@
-"""
-Унифицированный обработчик данных с поддержкой MTF/STF
-"""
-import pandas as pd
+# bots2/data_handler.py
 import ccxt
-from typing import Dict, List, Optional
-from datetime import datetime, timedelta
-from config.settings import EXCHANGE_CONFIG
+import pandas as pd
+import asyncio
+from typing import Optional, Dict
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class DataHandler:
-    def __init__(self, exchange_id='binance'):
-        self.exchange = getattr(ccxt, exchange_id)({
-            'apiKey': EXCHANGE_CONFIG['api_key'],
-            'secret': EXCHANGE_CONFIG['api_secret'],
-            'enableRateLimit': True
+    """
+    Загружает рыночные данные с биржи (Binance).
+    В будущем можно добавить кеширование, другие биржи, реконнект.
+    """
+    def __init__(self, exchange_id: str = 'binance'):
+        exchange_class = getattr(ccxt, exchange_id)
+        self.exchange = exchange_class({
+            'enableRateLimit': True,  # Важно для соблюдения лимитов
+            'options': {'defaultType': 'spot'}
         })
-        
-    async def fetch_ohlcv_multi_timeframe(
-        self, 
-        symbol: str, 
-        timeframes: List[str], 
-        limit: int = 500
-    ) -> Dict[str, pd.DataFrame]:
-        """Загрузка данных для нескольких таймфреймов"""
-        data = {}
-        
-        for tf in timeframes:
-            ohlcv = await self.exchange.fetch_ohlcv(
-                symbol, 
-                timeframe=tf, 
-                limit=limit
+        logger.info(f"DataHandler подключен к {exchange_id}")
+
+    async def get_ohlcv(self, 
+                        symbol: str, 
+                        timeframe: str = '1h', 
+                        limit: int = 100) -> Optional[pd.DataFrame]:
+        """
+        Асинхронно загружает свечи.
+        Возвращает DataFrame с колонками: ['timestamp', 'open', 'high', 'low', 'close', 'volume']
+        """
+        try:
+            # CCxt работает синхронно, поэтому оборачиваем в потоки
+            loop = asyncio.get_event_loop()
+            ohlcv = await loop.run_in_executor(
+                None, 
+                lambda: self.exchange.fetch_ohlcv(symbol, timeframe, limit=limit)
             )
             
             df = pd.DataFrame(
@@ -38,28 +44,35 @@ class DataHandler:
             df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
             df.set_index('timestamp', inplace=True)
             
-            # Добавляем расчетные поля из crypto_lite_new
-            df = self._calculate_indicators(df)
-            data[tf] = df
+            # Простой расчет индикатора для примера (можно добавить больше)
+            df['sma_20'] = df['close'].rolling(window=20).mean()
             
-        return data
-    
-    def _calculate_indicators(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Расчет индикаторов (можно добавить из trading_tab.py)"""
-        # RSI
-        delta = df['close'].diff()
-        gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
-        loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
-        rs = gain / loss
-        df['rsi'] = 100 - (100 / (1 + rs))
+            logger.debug(f"Загружено {len(df)} свечей для {symbol} ({timeframe})")
+            return df
+            
+        except ccxt.NetworkError as e:
+            logger.error(f"Сетевая ошибка при загрузке {symbol}: {e}")
+        except ccxt.ExchangeError as e:
+            logger.error(f"Ошибка биржи при загрузке {symbol}: {e}")
+        except Exception as e:
+            logger.error(f"Неизвестная ошибка: {e}")
         
-        # EMA
-        df['ema_20'] = df['close'].ewm(span=20, adjust=False).mean()
-        df['ema_50'] = df['close'].ewm(span=50, adjust=False).mean()
-        
-        return df
+        return None
+
+    async def get_multiple_tf(self, symbol: str, timeframes: list, limit=100) -> Dict[str, pd.DataFrame]:
+        """Загружает несколько таймфреймов одновременно."""
+        tasks = [self.get_ohlcv(symbol, tf, limit) for tf in timeframes]
+        results = await asyncio.gather(*tasks)
+        return {tf: df for tf, df in zip(timeframes, results) if df is not None}
+
+# Простой тест работы
+if __name__ == "__main__":
+    async def test():
+        handler = DataHandler()
+        df = await handler.get_ohlcv('BTC/USDT', '1h', 10)
+        if df is not None:
+            print(df[['close', 'sma_20']].tail())
+        else:
+            print("Не удалось загрузить данные")
     
-    def get_symbol_info(self, symbol: str) -> Dict:
-        """Получение информации о паре (из exchange_info.py)"""
-        markets = self.exchange.load_markets()
-        return markets.get(symbol, {})
+    asyncio.run(test())
